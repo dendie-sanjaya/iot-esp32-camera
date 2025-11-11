@@ -1,0 +1,5 @@
+opencv-python
+Flask 
+opencv-python 
+requests
+paho-mqtt
