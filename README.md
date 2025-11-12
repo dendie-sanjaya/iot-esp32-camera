@@ -110,49 +110,54 @@ The backend application ('app.py') exposes several API endpoints for interacting
 1. **Install dependencies**
    - Make sure you have Python 3 installed.
    - Install required packages:
-  ```bash
-  pip install -r ai/requirement.txt
-  ```
+  
+    ```bash
+    pip install -r ai/requirement.txt
+    ```
 
-     See the screenshot of the database setup in 
+    See the screenshot of the database setup in 
 
-     !['ss/database-setup.png'](ss/python-venv.png).
-     
-     !['ss/database-setup.png'](ss/python-install-modul.png).
+    !['ss/database-setup.png'](ss/python-venv.png)
+
+    !['ss/database-setup.png'](ss/python-install-modul.png)
 
 2. **Set up the database**
    - Run the database setup script:
-  ```bash
-  python ai/database_setup.py
-  ```
+  
+    ```bash
+    python ai/database_setup.py
+    ```
    - This will initialize the database for storing detection history and other data.
    - See the screenshot of the database setup in 
   
-     !['ss/database-setup.png'](ss/database-setup.png).
+    !['ss/database-setup.png'](ss/database-setup.png)
 
-     !['ss/database-setup.png'](ss/database-table.png).
+    !['ss/database-setup.png'](ss/database-table.png)
 
-     !['ss/database-setup.png'](ss/database-table-lamp.png).
+    !['ss/database-setup.png'](ss/database-table-lamp.png)
 
-1. **Run the AI application**
+**1. Run the AI application**
    - Start the main AI prediction app:
-  ```bash
-  python ai/app.py
-  ```
+  
+    ```bash
+    python ai/app.py
+    ```
+    
    - This script runs the AI model for human detection and serves the web dashboard.
    - See the dashboard screenshot in 
   
-    !['ss/python-run-app'](ss/python-run-app.png).
+    !['ss'](ss/python-run-app.png)
 
-1. **Run the listener**
+**2. Run the listener**
    - Start the listener to process incoming sensor data:
-  ```bash
-  python ai/listener.py
-  ```
+
+    ```bash
+    python ai/listener.py
+    ```
    - The listener receives data from microcontrollers and updates the database in real time.
    - See the listener activity screenshot in 
      
-    !['ss/python-run-listener.png'](ss/python-run-listener.png).
+   !['ss'](ss/python-run-listener.png)
     
 
 ## Mictorcontroller & Connectivity
@@ -171,9 +176,9 @@ This system leverages a wide range of electronic components and connectivity pro
   - Arduino IDE for programming ESP32 &ESP8266
   - Windows drivers for USB-to-serial hardware ('driver/' folder)
   
-   !['ss'](ss/arduiono-adpeter-usb-to-serial.png).
+   !['ss'](ss/arduiono-adpeter-usb-to-serial.png)
 
-   !['ss'](ss/arduiono-adpeter-usb-to-success).
+   !['ss'](ss/arduiono-adpeter-usb-to-success)
 
 
 ## MQTT Communication & Integration
@@ -217,7 +222,7 @@ The frontend, located in the 'frontend/' folder, provides a web-based dashboard 
 3. Interact with the dashboard to view live data, control devices, and access historical records.
 
 ### Screenshots
-- Dashboard main view: !['ss/frontend-dashboard.png'](ss/dashboard1.png)
+- Dashboard main view: !['ss/frontend-dashboard.png'](ss/dashboard-1.png)
   
 - Device control panel: !['ss/frontend-control.png'](ss/dashboard-2.png)
 - 
