@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+ 
+  # Container untuk broker MQTT (HiveMQ)
+  mqtt-broker:
+    image: "hivemq/hivemq-ce"
+    container_name: mqtt-broker
+    ports:
+      - "1883:1883" 
+      - "8000:8000"
+    networks:
+      - iot-network
+
+networks:
+  iot-network:
+    driver: bridge
