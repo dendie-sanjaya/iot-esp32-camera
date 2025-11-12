@@ -132,7 +132,7 @@ The backend application ('app.py') exposes several API endpoints for interacting
 
      !['ss/database-setup.png'](ss/database-table.png).
 
-     !['ss/database-setup.png'](ss/database-lamp.png).
+     !['ss/database-setup.png'](ss/database-table-lamp.png).
 
 1. **Run the AI application**
    - Start the main AI prediction app:
