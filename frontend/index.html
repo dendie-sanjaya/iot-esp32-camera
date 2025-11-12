@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Human Detection & Lamp Control Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        .capture-image {
+            max-width: 80px;
+            height: auto;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .capture-image:hover {
+            transform: scale(1.05);
+        }
+        /* Style untuk Indikator Lampu */
+        .lamp-indicator {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+            border: 2px solid #343a40;
+            vertical-align: middle;
+        }
+        /* Lampu ON: Merah */
+        .lamp-on {
+            background-color: #dc3545; /* Merah untuk ON (danger) */
+            box-shadow: 0 0 10px #dc3545, 0 0 20px #dc3545;
+        }
+        /* Lampu OFF: Abu-abu/Mati */
+        .lamp-off {
+            background-color: #6c757d; 
+        }
+        
+        @media (max-width: 768px) {
+            .table th, .table td {
+                font-size: 0.8rem;
+                padding: 0.5rem;
+            }
+            .capture-image {
+                max-width: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container my-5">
+        <h1 class="mb-4 text-center">IoT Human Detection & Lamp Control Dashboard</h1>
+        
+        <div class="row mb-5 g-4">
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Lamp Control 💡</h5>
+                        <p class="card-text">Send command to turn off the light.</p>
+                        <button id="turnOffLampBtn" class="btn btn-danger w-100">
+                            <span  id="btnSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
+                            Turn Off Lamp (OFF)
+                        </button>
+                        <div id="mqttMessage" class="mt-2"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Current Lamp Status</h5>
+                        <div id="lampStatusDisplay" class="fs-4 fw-bold">
+                            <span class="lamp-indicator lamp-off" id="lampIndicator"></span> Loading...
+                        </div>
+                        <small id="lampStatusTime" class="text-muted"></small>
+                        <small class="d-block mt-1 text-primary">Auto-refresh: 3 seconds</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="mt-5 mb-3">Human Detection History</h2>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Time</th>
+                        <th>Status Motion</th>
+                        <th>Count People Detectio </th>
+                        <th>Image</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                    </tbody>
+            </table>
+        </div>
+        <div id="loadingMessage" class="text-center">Loading data...</div>
+    </div>
+
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Full Image View</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalImage" src="" class="img-fluid" alt="Captured Image">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // =======================================================================
+        // KONFIGURASI API URL: GANTI DENGAN ALAMAT SERVER FLASK/API ANDA
+        // =======================================================================
+        const API_BASE_URL = "http://127.0.0.1:5000"; 
+        const CAPTURE_BASE_URL = "http://127.0.0.1/sensor-motion";
+        const REFRESH_INTERVAL = 3000; 
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchHistoryData();
+            fetchLampStatus();
+            
+            // Set Auto-Refresh Status Lampu & History (3 detik)
+            setInterval(fetchLampStatus, REFRESH_INTERVAL); 
+            setInterval(fetchHistoryData, REFRESH_INTERVAL); // <-- BARU: Auto-refresh History
+
+            document.getElementById('turnOffLampBtn').addEventListener('click', turnOffLamp);
+        });
+
+        // =======================================================================
+        // FUNCTION 1: FETCH HISTORY DATA (Menggunakan Icon Kamera)
+        // =======================================================================
+        async function fetchHistoryData() {
+            const tableBody = document.getElementById('historyTableBody');
+            const loadingMessage = document.getElementById('loadingMessage');
+            // loadingMessage.classList.remove('d-none'); // Dihapus agar tidak mengganggu saat refresh
+            tableBody.innerHTML = ''; 
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/history`);
+                const data = await response.json();
+
+                if (data.status === 'success' && data.data.length > 0) {
+                    data.data.forEach(row => {
+                        const tr = document.createElement('tr');
+                        const statusClass = row.detection_status === 'Detected' ? 'table-warning' : 'table-light';
+                        tr.classList.add(statusClass);
+
+                        tr.innerHTML = `
+                            <td>${row.id}</td>
+                            <td>${row.datetime}</td>
+                            <td>${row.detection_status}</td>
+                            <td>${row.person_count}</td>
+                            <td>
+                                <button class="btn btn-sm btn-info"
+                                        data-filepath="${CAPTURE_BASE_URL}/foto-investigation/${row.capture_image}"
+                                        onclick="showImageModal(this)">
+                                    <i class="bi bi-camera-fill"></i>
+                                    
+                                </button>
+                            </td>
+                        `;
+                        tableBody.appendChild(tr);
+                    });
+                } else {
+                    tableBody.innerHTML = '<tr><td colspan="5" class="text-center">No history data found.</td></tr>';
+                }
+
+            } catch (error) {
+                console.error('Error fetching history data:', error);
+                // Biarkan tabel kosong atau menampilkan pesan error jika gagal koneksi
+            } finally {
+                loadingMessage.classList.add('d-none');
+            }
+        }
+        
+        // =======================================================================
+        // FUNCTION 2: SHOW IMAGE POPUP (MODAL)
+        // =======================================================================
+        function showImageModal(btnElement) {
+            const filePath = btnElement.getAttribute('data-filepath'); 
+            const modalImage = document.getElementById('modalImage');
+            const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+            
+            modalImage.src = filePath;
+            imageModal.show();
+        }
+
+        // =======================================================================
+        // FUNCTION 3: CONTROL LAMP (MQTT PUBLISH)
+        // =======================================================================
+        async function turnOffLamp() {
+            
+            const btn = document.getElementById('turnOffLampBtn');
+            const spinner = document.getElementById('btnSpinner');
+            const messageDiv = document.getElementById('mqttMessage');
+            
+            btn.disabled = true;
+            //spinner.classList.remove('d-none');
+            //messageDiv.innerHTML = '<span class="text-info">Sending OFF command...</span>';
+
+            try {
+                // Pastikan endpoint ini benar dan Flask CORS sudah aktif
+                const response = await fetch(`${API_BASE_URL}/control/turn_off_lamp`, { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({}) // Body kosong karena status dikirim via endpoint
+                });
+
+                const result = await response.json();
+                
+                if (response.ok && result.status === 'success') {
+                    messageDiv.innerHTML = `<span class="text-success fw-bold">✅ Success: ${result.message}</span>`;
+                    fetchLampStatus(); // Refresh status
+                } else {
+                    messageDiv.innerHTML = `<span class="text-danger fw-bold">❌ Failed: ${result.message || 'Failed to send command.'}</span>`;
+                }
+            } catch (error) {
+                console.error('Error sending MQTT command:', error);
+                messageDiv.innerHTML = `<span class="text-danger fw-bold">❌ Network Error: Failed to connect to server.</span>`;
+            } finally {
+                spinner.classList.add('d-none');
+                // Tombol akan di-enable/disable lagi oleh fetchLampStatus()
+            }
+        }
+        
+        // =======================================================================
+        // FUNCTION 4: FETCH LAMP STATUS (Logika Tombol dan Indikator Warna)
+        // =======================================================================
+        async function fetchLampStatus() {
+            const display = document.getElementById('lampStatusDisplay');
+            const indicator = document.getElementById('lampIndicator');
+            const timeDisplay = document.getElementById('lampStatusTime');
+            const controlButton = document.getElementById('turnOffLampBtn');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/status/lamp`);
+                const data = await response.json();
+                
+                // Pastikan indicator ada di DOM sebelum diakses
+                const currentIndicator = document.getElementById('lampIndicator');
+                
+                if (data.status === 'success' && currentIndicator) {
+                    const rawStatus = data.lamp_status;
+                    const lampStatus = rawStatus.toUpperCase(); 
+                    
+                    // Reset kelas sebelumnya
+                    currentIndicator.classList.remove('lamp-on', 'lamp-off');
+                    controlButton.classList.remove('btn-danger', 'btn-warning');
+                    
+                    if (lampStatus === 'ON') {
+                        // KONDISI ON: Lingkaran Merah, Tombol ENABLE (MERAH)
+                        currentIndicator.classList.add('lamp-on');
+                        controlButton.disabled = false; // Tombol AKTIF
+                        controlButton.textContent = "Turn Off Lamp (OFF)";
+                        controlButton.classList.add('btn-danger');
+                    } else if (lampStatus === 'OFF') {
+                        // KONDISI OFF: Lingkaran Abu-abu, Tombol DISABLE (Kuning/Oranye)
+                        currentIndicator.classList.add('lamp-off');
+                        controlButton.disabled = true; // Tombol NONAKTIF
+                        controlButton.textContent = "Lamp Already OFF";
+                        controlButton.classList.add('btn-warning');
+                    } else {
+                        // Status UNKNOWN
+                        currentIndicator.classList.add('lamp-off'); 
+                        controlButton.disabled = true; 
+                        controlButton.textContent = "Status Unknown";
+                        controlButton.classList.add('btn-warning');
+                    }
+                    
+                    // Update Display Text (Gunakan innerHTML untuk seluruh display)
+                    display.innerHTML = `
+                        <span class="lamp-indicator ${currentIndicator.classList.contains('lamp-on') ? 'lamp-on' : 'lamp-off'}" 
+                              id="lampIndicator"></span> 
+                        ${rawStatus.toUpperCase()}
+                    `;
+                    
+                    timeDisplay.innerHTML = `Last updated: ${data.last_updated}`;
+                } else {
+                    // Error handling API status
+                    display.innerHTML = `<span class="lamp-indicator lamp-off" id="lampIndicator"></span> API Error`;
+                    timeDisplay.innerHTML = `Failed to load status.`;
+                    controlButton.disabled = true;
+                    controlButton.textContent = "API Error";
+                }
+
+            } catch (error) {
+                // Error handling Network
+                console.error('Error fetching lamp status:', error);
+                display.innerHTML = `<span class="lamp-indicator lamp-off" id="lampIndicator"></span> Network Error`;
+                timeDisplay.innerHTML = `Could not connect.`;
+                controlButton.disabled = true;
+                controlButton.textContent = "Network Error";
+            }
+        }
+    </script>
+</body>
+</html>
