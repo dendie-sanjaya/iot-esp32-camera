@@ -144,10 +144,9 @@ The backend application ('app.py') exposes several API endpoints for interacting
     ```
     
    - This script runs the AI model for human detection and serves the web dashboard.
-   - See the dashboard screenshot in 
-  
-    !['ss'](ss/python-run-app.png)
 
+   !['ss'](ss/python-run-app.png)
+ 
 **2. Run the listener**
    - Start the listener to process incoming sensor data:
 
@@ -178,7 +177,7 @@ This system leverages a wide range of electronic components and connectivity pro
   
    !['ss'](ss/arduiono-adpeter-usb-to-serial.png)
 
-   !['ss'](ss/arduiono-adpeter-usb-to-success)
+   !['ss'](ss/arduiono-adpeter-usb-to-success.png)
 
 
 ## MQTT Communication & Integration
