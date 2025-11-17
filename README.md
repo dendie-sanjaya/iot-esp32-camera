@@ -16,7 +16,7 @@ Table of Contents
     - [API Endpoints](#api-endpoints)
     - [How to Run](#how-to-run)
   - [Mictorcontroller \& Connectivity](#mictorcontroller--connectivity)
-    - [Device Microcontroller \& Lab Simulation](#device-microcontroller--lab-simulation)
+  - [Device Microcontroller \& Lab Simulation](#device-microcontroller--lab-simulation)
   - [MQTT Communication \& Integration](#mqtt-communication--integration)
   - [Frontend Web Dashboard](#frontend-web-dashboard)
     - [Features](#features)
@@ -196,7 +196,7 @@ This system leverages a wide range of electronic components and connectivity pro
    !['ss'](ss/arduiono-adpeter-usb-to-success.png)
 
 
-### Device Microcontroller & Lab Simulation
+## Device Microcontroller & Lab Simulation
 
 This is Device Device Microcontroller 
 
@@ -261,7 +261,8 @@ These images illustrate the main features and user experience of the web dashboa
 
 ## Video Demostration
 
-This is Video Demostration : !['ss/demo.mp'](ss/demo.mp4)
-Link Short Youtube :
+- This is Video Demostration : !['ss/demo.mp4'](ss/demo.mp4)
+
+- Link Short Youtube :
 
 
