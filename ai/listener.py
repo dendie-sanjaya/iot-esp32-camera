@@ -4,19 +4,20 @@ import json
 import time
 
 # --- Konfigurasi MQTT ---
-MQTT_BROKER = "localhost"  # Ganti dengan alamat broker MQTT Anda
+MQTT_BROKER = "192.168.100.35"  # Ganti dengan alamat broker MQTT Anda
 MQTT_PORT = 1883
-MQTT_TOPIC = "sensor/motion/status" # Topik yang mengirim status pergerakan
+MQTT_TOPIC = "sensor/motion" # Topik yang mengirim status pergerakan
 
 # --- Konfigurasi API Kamera ---
 # GANTI INI: Asumsi bahwa ada endpoint API di kamera yang mengembalikan gambar terbaru
-CAMERA_IMAGE_API_URL = "http://192.168.69.90/sensor-motion/image-capture/test.jpg"  # Ganti dengan URL API kamera Anda
+CAMERA_IMAGE_API_URL = "http://192.168.100.71/capture"  # Ganti dengan URL API kamera Anda
 
 # --- Konfigurasi API Flask ---
 # app.py Anda memiliki endpoint /detect/url, tapi kita ubah ke /detect/upload 
 # agar listener bisa mengirim data gambar langsung, BUKAN URL, untuk efisiensi
 # (Namun, jika /detect/url harus digunakan, kita bisa gunakan endpoint itu juga)
 FLASK_DETECT_URL = "http://172.26.177.47:5000/detect/upload" 
+
 # Kita akan gunakan endpoint UPLOAD (/detect/upload) agar tidak perlu mengunduh 2 kali.
 
 # --- Fungsi Callback MQTT ---

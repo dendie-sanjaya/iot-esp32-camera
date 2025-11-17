@@ -16,12 +16,13 @@ Table of Contents
     - [API Endpoints](#api-endpoints)
     - [How to Run](#how-to-run)
   - [Mictorcontroller \& Connectivity](#mictorcontroller--connectivity)
-    - [Device Microcontroller](#device-microcontroller)
+    - [Device Microcontroller \& Lab Simulation](#device-microcontroller--lab-simulation)
   - [MQTT Communication \& Integration](#mqtt-communication--integration)
   - [Frontend Web Dashboard](#frontend-web-dashboard)
     - [Features](#features)
     - [How to Use](#how-to-use)
-    - [Screenshots](#screenshots)
+    - [Dashboard](#dashboard)
+  - [Video Demostration](#video-demostration)
 
 
 ## Introduction
@@ -167,10 +168,24 @@ This system leverages a wide range of electronic components and connectivity pro
   - ESP32 for camera, sensor, and WiFi integration
   - ESP8266 for additional wireless connectivity and sensor expansion
 
+
 - **Sensors & Actuators:**
-  - Camera modules for image capture
-  - PIR motion sensors for activity detection
-  - Lamps and relays for automated control
+  **- Camera modules for image capture**
+
+   !['ss'](ss/arduino-cameara-1.png)
+
+   !['ss'](ss/arduino-camera-1.png)
+
+   !['ss'](ss/arduino-camera-2.png)
+
+
+  **- PIR motion sensors for activity detection**
+  
+   !['ss'](ss/arduino-sensor-motion.png)
+
+
+  **- Lamps and relays for automated control**
+
 
 - **Software & Drivers:**
   - Arduino IDE for programming ESP32 &ESP8266
@@ -181,11 +196,15 @@ This system leverages a wide range of electronic components and connectivity pro
    !['ss'](ss/arduiono-adpeter-usb-to-success.png)
 
 
-### Device Microcontroller
+### Device Microcontroller & Lab Simulation
 
 This is Device Device Microcontroller 
 
 !['ss'](ss/device.jpg)
+
+This is Lab Simulation
+
+!['ss'](ss/lab.jpg)
 
 
 ## MQTT Communication & Integration
@@ -204,7 +223,9 @@ MQTT (Message Queuing Telemetry Transport) is used in this system for lightweigh
 - **MQTT Client Connection:**
    connecting to MQTT: !['ss/mqtt-client.png'](ss/mqtt-client.png)
 
+
 - **MQTT Data Flow:**
+- 
   - Visualization of message exchange:
 
     !['ss'](ss/mqtt-sensor-motion.png)
@@ -228,7 +249,7 @@ The frontend, located in the 'frontend/' folder, provides a web-based dashboard 
 2. Ensure the backend ('ai/app.py') is running and accessible.
 3. Interact with the dashboard to view live data, control devices, and access historical records.
 
-### Screenshots
+### Dashboard 
 - Dashboard main view: !['ss/frontend-dashboard.png'](ss/dashboard-1.png)
   
 - Device control panel: !['ss/frontend-control.png'](ss/dashboard-2.png)
@@ -236,3 +257,11 @@ The frontend, located in the 'frontend/' folder, provides a web-based dashboard 
 - Historical data chart: !['ss/frontend-history.png'](ss/dashboard-3.png)
 
 These images illustrate the main features and user experience of the web dashboard.
+
+
+## Video Demostration
+
+This is Video Demostration : !['ss/demo.mp'](ss/demo.mp4)
+Link Short Youtube :
+
+

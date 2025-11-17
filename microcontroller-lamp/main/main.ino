@@ -7,8 +7,8 @@
 // ===================================
 
 // Kredensial WiFi Anda
-const char* ssid = "xxxx";
-const char* password = "xxxxxx"; // GANTI dengan PASSWORD ASLI WIFI Anda!
+const char* ssid = "Mama adelia";
+const char* password = "uu311009"; // GANTI dengan PASSWORD ASLI WIFI Anda!
 
 // Konfigurasi MQTT Broker
 const char* mqtt_server = "192.168.100.35"; // Pastikan ini adalah IP lokal PC/Server Broker Anda!
@@ -21,8 +21,8 @@ const char* inTopic = "lamp";
 // 2. KONFIGURASI PERANGKAT KERAS
 // ===================================
 
-// PIN KONTROL: D2 (GPIO 4) lebih stabil daripada D1
-const int RELAY_PIN = D2; 
+// PIN KONTROL: D1 (GPIO 4) lebih stabil daripada D1
+const int RELAY_PIN = D1; 
 
 // LOGIKA RELAY (SUDAH DIPERBAIKI):
 // KAMI MENGUBAHNYA KEMBALI KE ACTIVE-LOW.
